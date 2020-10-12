@@ -62,6 +62,30 @@ function handleLocation(request, response) {
   }
 }
 
+app.get('/weather',handleWeather);
+
+function Weather(city, dayData) {
+  //this.search_query = city;
+  //this.formatted_query = dayData.display_name;
+  this.forecast = dayData.weather.description;
+  this.time = dayData.valid_date;
+}
+
+function handleWeather(request, response) {
+  try {
+    const weatherData = require('./data/weather.json');
+    const city = request.query.city;
+    var locationData = [];
+    weatherData.data.forEach(item => {
+      locationData.push(new Weather(city,item));
+    });
+    //const locationData = new Weather(city, weatherData);
+    response.json(locationData);
+  } catch (error) {
+    response.status(500).send('sorry, something went wrong: \\n' + error);
+  }
+}
+
 app.get('*', (request, response) => {
   // status -> did this work, where are we at in the process of delivering data
   // 404 -> "not found" status code
