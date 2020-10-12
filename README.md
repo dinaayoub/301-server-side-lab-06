@@ -30,6 +30,18 @@ Estimate of time needed to complete: 1 hour
 
 Start time: 2:45 pm
 
-Finish time: 3:12 PM
+Finish time: 3:15 PM
 
-Actual time needed to complete: 27 min
+Actual time needed to complete: 30 min
+
+---------------------------------------------------------
+
+## Number and name of feature: Feature # 4 - Errors
+
+Estimate of time needed to complete: 30 min
+
+Start time: 3:25 pm
+
+Finish time: 3:33 PM
+
+Actual time needed to complete: 7 min
