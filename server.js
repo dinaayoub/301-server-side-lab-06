@@ -38,6 +38,11 @@ app.get('/test/route', (request, response) => {
   response.json({ location: 'seattle', temp: '58 deg' });
 });
 
+function ErrorMessage(status){
+  this.status = status;
+  this.responseText = "Sorry, something went wrong";
+}
+
 // http://localhost:3000/location?city=seattle
 app.get('/location', handleLocation);
 
@@ -58,10 +63,11 @@ function handleLocation(request, response) {
   } catch (error) {
     console.log(error);
     // otherwise, if an error is handed off, handle it here
-    response.status(500).send('sorry, something broke: \\n' + error);
+    response.status(500).send(new ErrorMessage(500));
   }
 }
 
+// http://localhost:3000/weather?city=seattle
 app.get('/weather',handleWeather);
 
 function Weather(city, dayData) {
@@ -70,6 +76,7 @@ function Weather(city, dayData) {
   this.forecast = dayData.weather.description;
   this.time = dayData.valid_date;
 }
+
 
 function handleWeather(request, response) {
   try {
@@ -82,7 +89,7 @@ function handleWeather(request, response) {
     //const locationData = new Weather(city, weatherData);
     response.json(locationData);
   } catch (error) {
-    response.status(500).send('sorry, something went wrong: \\n' + error);
+    response.status(500).send(new ErrorMessage(500));
   }
 }
 
@@ -90,7 +97,7 @@ app.get('*', (request, response) => {
   // status -> did this work, where are we at in the process of delivering data
   // 404 -> "not found" status code
   // statuses live on the request and the response body
-  response.status(404).send('not found');
+  response.status(404).send(new ErrorMessage(404));
 });
 
 // configure our app to accept and listen for incoming traffic
