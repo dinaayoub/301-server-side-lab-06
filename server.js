@@ -21,9 +21,9 @@ const PORT = process.env.PORT;
 //create constants for all the API keys that are now stored in .env
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHERBIT_API_KEY = process.env.WEATHERBIT_API_KEY;
-const YELP_API_KEY = process.env.YELP_API_KEY;
-const YELP_CLIENT_ID = process.env.YELP_CLIENT_ID
-const MOVIEDB_API_KEY = process.env.MOVIEDB_API_KEY;
+//const YELP_API_KEY = process.env.YELP_API_KEY;
+//const YELP_CLIENT_ID = process.env.YELP_CLIENT_ID
+//const MOVIEDB_API_KEY = process.env.MOVIEDB_API_KEY;
 const HIKINGPROJECT_API_KEY = process.env.HIKINGPROJECT_API_KEY;
 
 // just "use" this -> it will allow for a public server
@@ -95,9 +95,7 @@ function handleLocation(request, response) {
 // http://localhost:3000/weather?city=seattle
 app.get('/weather',handleWeather);
 
-function Weather(city, dayData) {
-  //this.search_query = city;
-  //this.formatted_query = dayData.display_name;
+function Weather(dayData) {
   this.forecast = dayData.weather.description;
   this.time = dayData.valid_date;
 }
@@ -105,14 +103,50 @@ function Weather(city, dayData) {
 
 function handleWeather(request, response) {
   try {
-    const city = request.query.city;
+    var city = request.query.search_query;
+    if (!city) city = request.query.city;
     const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHERBIT_API_KEY}&days=8&city=${city}`;
-    var locationData = [];
     superagent.get(url)
       .then(rawData => {
-        console.log(rawData.body);
-        locationData = rawData.body.data.map(item => new Weather(city,item));
-        response.json(locationData);
+        var weatherData = rawData.body.data.map(date => new Weather(date));
+        response.json(weatherData);
+      })
+      .catch(err =>console.error('returned error:',err));
+  } catch (error) {
+    console.log(error);
+    response.status(500).send(new ErrorMessage(500));
+  }
+}
+
+app.get('/trails',handleTrails);
+
+function Trail(trailData) {
+  this.name = trailData.name;
+  this.location = trailData.location;
+  this.length = trailData.length;
+  this.stars = trailData.stars;
+  this.star_votes = trailData.starVotes;
+  this.summary = trailData.summary;
+  this.trail_url = trailData.trail_url;
+  this.conditions = trailData.conditionStatus;
+  if (trailData.conditionDetails) {
+    this.conditions += ' - ' + trailData.conditionDetails;
+  }
+  this.condition_time = trailData.conditionDate.slice(trailData.conditionDate.indexOf(' '));
+  this.condition_date = trailData.conditionDate.replace(this.condition_time,'');
+  this.condition_time = this.condition_time.substring(1);
+}
+
+
+function handleTrails(request, response) {
+  try {
+    var lat = request.query.latitude; //Seattle: 47.6038321;
+    var lon = request.query.longitude; //Seattle: -122.3300624;
+    const url = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${lon}&key=${HIKINGPROJECT_API_KEY}`;
+    superagent.get(url)
+      .then(rawData => {
+        var trailData = rawData.body.trails.map(trail => new Trail(trail));
+        response.json(trailData);
       })
       .catch(err =>console.error('returned error:',err));
   } catch (error) {
