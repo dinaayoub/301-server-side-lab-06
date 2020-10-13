@@ -105,11 +105,16 @@ function Weather(city, dayData) {
 
 function handleWeather(request, response) {
   try {
-    const weatherData = require('./data/weather.json');
     const city = request.query.city;
-    var locationData = weatherData.data.map(item => new Weather(city,item));
-    console.log(locationData);
-    response.json(locationData);
+    const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHERBIT_API_KEY}&days=8&city=${city}`;
+    var locationData = [];
+    superagent.get(url)
+      .then(rawData => {
+        console.log(rawData.body);
+        locationData = rawData.body.data.map(item => new Weather(city,item));
+        response.json(locationData);
+      })
+      .catch(err =>console.error('returned error:',err));
   } catch (error) {
     console.log(error);
     response.status(500).send(new ErrorMessage(500));
