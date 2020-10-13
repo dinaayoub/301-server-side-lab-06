@@ -33,7 +33,7 @@ Dependencies:
 * superagent
 
 ## Change Log
-10-13-2020 11:58 pm - Added use of locationiq.com GeoData API
+10-13-2020 11:58 pm - Added use of locationiq.com GeoData API & all the API keys I will need
 10-12-2020 3:58 pm - Completed the README.md file
 10-12-2020 3:33 pm - Added error handling
 10-12-2020 3:15 pm - Added GET route for /weather
@@ -46,7 +46,7 @@ Started with the demo code from lecture by Brian Nations, code located here: [ht
 
 ## Time Estimates
 
-### Number and name of feature: Feature # 1 - Repository Setup
+### Number and name of feature: LAB 06 - Feature # 1 - Repository Setup
 
 Estimate of time needed to complete: 20 min
 
@@ -58,7 +58,7 @@ Actual time needed to complete: 27 min
 
 ---------------------------------------------------------
 
-### Number and name of feature: Feature # 2 - Locations
+### Number and name of feature: LAB 06 - Feature # 2 - Locations
 
 Estimate of time needed to complete: 30 min
 
@@ -70,7 +70,7 @@ Actual time needed to complete: 21 min
 
 ---------------------------------------------------------
 
-### Number and name of feature: Feature # 3 - Weather
+### Number and name of feature: LAB 06 - Feature # 3 - Weather
 
 Estimate of time needed to complete: 1 hour
 
@@ -82,7 +82,7 @@ Actual time needed to complete: 30 min
 
 ---------------------------------------------------------
 
-### Number and name of feature: Feature # 4 - Errors
+### Number and name of feature: LAB 06 - Feature # 4 - Errors
 
 Estimate of time needed to complete: 30 min
 
@@ -91,3 +91,15 @@ Start time: 3:25 pm
 Finish time: 3:33 PM
 
 Actual time needed to complete: 7 min
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 07 - Feature # 1 - Data Formatting
+
+Estimate of time needed to complete: 20 min
+
+Start time: 12:42 PM
+
+Finish time: 
+
+Actual time needed to complete: 

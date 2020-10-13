@@ -107,13 +107,11 @@ function handleWeather(request, response) {
   try {
     const weatherData = require('./data/weather.json');
     const city = request.query.city;
-    var locationData = [];
-    weatherData.data.forEach(item => {
-      locationData.push(new Weather(city,item));
-    });
-    //const locationData = new Weather(city, weatherData);
+    var locationData = weatherData.data.map(item => new Weather(city,item));
+    console.log(locationData);
     response.json(locationData);
   } catch (error) {
+    console.log(error);
     response.status(500).send(new ErrorMessage(500));
   }
 }
