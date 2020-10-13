@@ -30,9 +30,10 @@ Dependencies:
 * express
 * dotenv
 * cors
+* superagent
 
 ## Change Log
-
+10-13-2020 11:58 pm - Added use of locationiq.com GeoData API
 10-12-2020 3:58 pm - Completed the README.md file
 10-12-2020 3:33 pm - Added error handling
 10-12-2020 3:15 pm - Added GET route for /weather
