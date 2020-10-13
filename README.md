@@ -33,6 +33,7 @@ Dependencies:
 * superagent
 
 ## Change Log
+10-13-2020 4:00 pm - Added use of weather bit API and The Hiking Project's API to show trails and weather forecast
 10-13-2020 11:58 pm - Added use of locationiq.com GeoData API & all the API keys I will need
 10-12-2020 3:58 pm - Completed the README.md file
 10-12-2020 3:33 pm - Added error handling
@@ -131,13 +132,12 @@ The problem was that city explorer ui wasn't working because it was sending a "s
 
 ---------------------------------------------------------
 
-### Number and name of feature: LAB 07 - Feature # 1 - Data Formatting
+### Number and name of feature: LAB 07 - Feature # 4 - Trails
 
-Estimate of time needed to complete: 20 min
+Estimate of time needed to complete: 1 hour
 
-Start time: 12:42 PM
+Start time: 2:40 PM
 
-Finish time: 1 PM
+Finish time: 4: 00 PM
 
-Actual time needed to complete: 18 min
-
+Actual time needed to complete: 1 hour 20 minutes
