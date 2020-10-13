@@ -100,6 +100,44 @@ Estimate of time needed to complete: 20 min
 
 Start time: 12:42 PM
 
-Finish time: 
+Finish time: 1 PM
 
-Actual time needed to complete: 
+Actual time needed to complete: 18 min
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 07 - Feature # 2 - Locations
+
+Estimate of time needed to complete: 20 min
+
+Start time: 1 PM
+
+Finish time: 1: 15 PM
+
+Actual time needed to complete: 15 min
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 07 - Feature # 3 - Weather
+
+Estimate of time needed to complete: 30 min
+
+Start time: 1:30 PM
+
+Finish time: 2:30 PM
+
+Actual time needed to complete: 1 hour
+The problem was that city explorer ui wasn't working because it was sending a "search_query=seattle" instead of a "city=seattle".
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 07 - Feature # 1 - Data Formatting
+
+Estimate of time needed to complete: 20 min
+
+Start time: 12:42 PM
+
+Finish time: 1 PM
+
+Actual time needed to complete: 18 min
+
