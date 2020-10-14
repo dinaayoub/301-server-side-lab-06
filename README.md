@@ -141,3 +141,39 @@ Start time: 2:40 PM
 Finish time: 4: 00 PM
 
 Actual time needed to complete: 1 hour 20 minutes
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 08 - Feature #1 - Database
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 08 - Feature #2 - Server
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 08 - Feature #1 - Deploy
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____

@@ -1,58 +1,39 @@
 'use strict';
 
-// "dotenv" pulls in any environment variables (process.env) that live in a .env file
-// as part of this project
+//dependencies
 require('dotenv').config();
-
-// requiring "pulling in" off the 3rd party dependencies we want to use
-// ie: express -> for building APIs and related services (backend for web apps)
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent')
-
-// assign express to "app" -> why? -> because everyone does that
 const app = express();
+const pg = require('pg');
+app.use(cors());
 
-// assign a PORT (or location) for accepting incoming traffic
-// devs often default their dev port to 3000, 3001, or 3333 for backends
-// and often default 8000 or 8080 for frontends
+//environment variables
 const PORT = process.env.PORT;
-
-//create constants for all the API keys that are now stored in .env
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHERBIT_API_KEY = process.env.WEATHERBIT_API_KEY;
-//const YELP_API_KEY = process.env.YELP_API_KEY;
-//const YELP_CLIENT_ID = process.env.YELP_CLIENT_ID
-//const MOVIEDB_API_KEY = process.env.MOVIEDB_API_KEY;
 const HIKINGPROJECT_API_KEY = process.env.HIKINGPROJECT_API_KEY;
+const CLIENT = new pg.Client(process.env.DATABASE_URL);
 
-// just "use" this -> it will allow for a public server
-app.use(cors());
 
 // simple server route to give us our "homepage"
 app.get('/', (request, response) => {
-  response.send('my homepage');
+  response.send('Hello and welcome to my homepage');
 });
 
-// don't focus too much on this -> just want to show you how we produce ERRORs
-app.get('/unauthorized', (request, response) => {
-  throw new Error('not authorized to access this route');
-});
-
-// simple/example API route
-// our missing link is the location of our actual data -> ie: file or a database
-// that contains the weather and the location
-app.get('/test/route', (request, response) => {
-  // see an API as a way to interface with data that can be used to power other applications/services
-  response.json({ location: 'seattle', temp: '58 deg' });
-});
-
-function ErrorMessage(status){
+function ErrorMessage(status) {
   this.status = status;
-  this.responseText = 'Sorry, something went wrong';
+  switch (status) {
+    case 404:
+      this.responseText = 'Oops, we can\'t find that page!';
+      break;
+    default:
+      this.responseText = 'Sorry, something went wrong';
+  }
 }
 
-// http://localhost:3000/location?city=seattle
+// Example valid URL: http://localhost:3000/location?city=seattle
 app.get('/location', handleLocation);
 
 function Location(city, geoData) {
@@ -63,37 +44,53 @@ function Location(city, geoData) {
 }
 
 function handleLocation(request, response) {
-  const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
-  const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json&limit=1`;
+  const city = request.query.city;
+  const SQL = `SELECT * FROM locations WHERE city='${city}';`;
 
-  //check if it's in the cache here!
-  // if (it's in thne cache) {} else {.... this stuff:
-  try {
-    // try to "resolve" the following (no errors)
-    superagent.get(url)
-      .then(data => {
-        const geoData = data.body[0];
-        const locationData = new Location(city, geoData);
-        //unclear why we're doing this part. it's like saying in the constructor this.url = this;
-        //add it to the cache here
+  CLIENT.query(SQL)
+    .then(results => {
+      // check if any rows have been returned
+      if (results.rowCount) {
+        //Results rowcount is not 0. send back the results in JSON format.
+        response.json(results.rows[0]);
+      } else {
+        //Results rowcount is 0. Get the data from the API then save it
+        try {
+          const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json&limit=1`;
 
-        response.json(locationData);
-      })
-      .catch(err => console.error('returned error:',err));
+          superagent.get(url)
+            .then(data => {
+              const geoData = data.body[0];
+              const locationData = new Location(city, geoData);
 
-  } catch (error) {
-    console.log(error);
-    // otherwise, if an error is handed off, handle it here
-    response.status(500).send(new ErrorMessage(500));
-  }
+              //add it to the cache here
+              const SQL = 'INSERT INTO locations (city, formatted_query, latitude, longitude) VALUES ($1,$2,$3,$4) RETURNING *;';
+              const locationArray = [locationData.search_query, locationData.formatted_query, locationData.latitude, locationData.longitude];
+
+              CLIENT.query(SQL,locationArray)
+                .then(() => {
+                  response.json(locationData);
+                })
+                .catch(err => {
+                  console.log('database error: ',err);
+                });
+            })
+            .catch(err => {
+              console.error('API returned error: ', err);
+              response.status(404).send(new ErrorMessage(404));
+            });
+        } catch (error) {
+          response.status(500).send(new ErrorMessage(500));
+        }
+      }
+    })
+    .catch(err => {
+      console.error('connection error: ', err);
+    });
 }
-// To figure out what to format the URL as, you have to read the docs
-// To add something to the header:
-// superagent.set ('user-key', ZOMATO_API_KEY)
 
-
-// http://localhost:3000/weather?city=seattle
-app.get('/weather',handleWeather);
+// Example valid URL: http://localhost:3000/weather?city=seattle
+app.get('/weather', handleWeather);
 
 function Weather(dayData) {
   this.forecast = dayData.weather.description;
@@ -111,14 +108,17 @@ function handleWeather(request, response) {
         var weatherData = rawData.body.data.map(date => new Weather(date));
         response.json(weatherData);
       })
-      .catch(err =>console.error('returned error:',err));
+      .catch(err => {
+        console.error('API returned error: ', err);
+        response.status(404).send(new ErrorMessage(404));
+      });
   } catch (error) {
-    console.log(error);
     response.status(500).send(new ErrorMessage(500));
   }
 }
 
-app.get('/trails',handleTrails);
+//Example valid URL: http://localhost:3000/trails?latitude=47.6038321&longitude=-122.3300624
+app.get('/trails', handleTrails);
 
 function Trail(trailData) {
   this.name = trailData.name;
@@ -133,36 +133,47 @@ function Trail(trailData) {
     this.conditions += ' - ' + trailData.conditionDetails;
   }
   this.condition_time = trailData.conditionDate.slice(trailData.conditionDate.indexOf(' '));
-  this.condition_date = trailData.conditionDate.replace(this.condition_time,'');
+  this.condition_date = trailData.conditionDate.replace(this.condition_time, '');
   this.condition_time = this.condition_time.substring(1);
 }
 
-
 function handleTrails(request, response) {
   try {
-    var lat = request.query.latitude; //Seattle: 47.6038321;
-    var lon = request.query.longitude; //Seattle: -122.3300624;
+    var lat = request.query.latitude;
+    var lon = request.query.longitude;
     const url = `https://www.hikingproject.com/data/get-trails?lat=${lat}&lon=${lon}&key=${HIKINGPROJECT_API_KEY}`;
     superagent.get(url)
       .then(rawData => {
         var trailData = rawData.body.trails.map(trail => new Trail(trail));
         response.json(trailData);
       })
-      .catch(err =>console.error('returned error:',err));
+      .catch(err => {
+        console.error('API returned error: ', err);
+        response.status(404).send(new ErrorMessage(404));
+      });
   } catch (error) {
     console.log(error);
     response.status(500).send(new ErrorMessage(500));
   }
 }
 
+//catch all if they go anywhere but the supported routes
 app.get('*', (request, response) => {
-  // status -> did this work, where are we at in the process of delivering data
-  // 404 -> "not found" status code
-  // statuses live on the request and the response body
   response.status(404).send(new ErrorMessage(404));
 });
 
-// configure our app to accept and listen for incoming traffic
-app.listen(PORT, () => {
-  console.log(`server up: ${PORT}`);
-});
+//connect to the db
+CLIENT.connect()
+  .then(() => {
+    // start the server if the db connection worked!
+    // configure our app to accept and listen for incoming traffic
+    app.listen(PORT, () => {
+      console.log(`server up: ${PORT}`);
+    });
+  })
+  .catch(err => {
+    //throw an error because we could not connect to the database
+    console.error('connection error: ', err);
+  });
+
+
