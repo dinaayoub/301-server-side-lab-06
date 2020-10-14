@@ -6,4 +6,6 @@ CREATE TABLE locations (
     formatted_query VARCHAR(255),
     latitude REAL,
     longitude REAL
-)
+);
+
+ALTER TABLE locations RENAME COLUMN city TO search_query;
