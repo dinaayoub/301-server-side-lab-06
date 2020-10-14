@@ -63,20 +63,20 @@ function Location(city, geoData) {
 }
 
 function handleLocation(request, response) {
+  const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
+  const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json&limit=1`;
+
+  //check if it's in the cache here!
+  // if (it's in thne cache) {} else {.... this stuff:
   try {
     // try to "resolve" the following (no errors)
-    // we no longer want to pull from this static data file
-    // we want to use a real API!
-    // const geoData = require('./data/location.json');
-
-    const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
-    const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json&limit=1`;
     superagent.get(url)
       .then(data => {
         const geoData = data.body[0];
         const locationData = new Location(city, geoData);
         //unclear why we're doing this part. it's like saying in the constructor this.url = this;
-        //locationData[url] = locationData;
+        //add it to the cache here
+
         response.json(locationData);
       })
       .catch(err => console.error('returned error:',err));
