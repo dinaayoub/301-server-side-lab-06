@@ -45,7 +45,7 @@ function Location(city, geoData) {
 
 function handleLocation(request, response) {
   const city = request.query.city;
-  const SQL = `SELECT * FROM locations WHERE city='${city}';`;
+  const SQL = `SELECT * FROM locations WHERE search_query='${city}';`;
 
   CLIENT.query(SQL)
     .then(results => {
@@ -64,7 +64,7 @@ function handleLocation(request, response) {
               const locationData = new Location(city, geoData);
 
               //add it to the cache here
-              const SQL = 'INSERT INTO locations (city, formatted_query, latitude, longitude) VALUES ($1,$2,$3,$4) RETURNING *;';
+              const SQL = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1,$2,$3,$4) RETURNING *;';
               const locationArray = [locationData.search_query, locationData.formatted_query, locationData.latitude, locationData.longitude];
 
               CLIENT.query(SQL,locationArray)
