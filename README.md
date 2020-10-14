@@ -1,7 +1,7 @@
 # City Explorer
 
 **Author**: Dina Ayoub
-**Version**: 1.0.5 (increment the patch/fix version number if you make more commits past your first submission)
+**Version**: 1.0.7
 
 ## Overview
 
@@ -33,6 +33,7 @@ Dependencies:
 * superagent
 
 ## Change Log
+10-14-2020 2:55pm - Added local db to cache location info
 10-13-2020 4:00 pm - Added use of weather bit API and The Hiking Project's API to show trails and weather forecast
 10-13-2020 11:58 pm - Added use of locationiq.com GeoData API & all the API keys I will need
 10-12-2020 3:58 pm - Completed the README.md file
@@ -144,36 +145,12 @@ Actual time needed to complete: 1 hour 20 minutes
 
 ---------------------------------------------------------
 
-### Number and name of feature: LAB 08 - Feature #1 - Database
+### Number and name of feature: LAB 08 - Feature #1 to #3 - Database, Server, and Deploy
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 3 hours
 
-Start time: _____
+Start time: 1:20
 
-Finish time: _____
+Finish time: 2:55
 
-Actual time needed to complete: _____
-
----------------------------------------------------------
-
-### Number and name of feature: LAB 08 - Feature #2 - Server
-
-Estimate of time needed to complete: _____
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
-
----------------------------------------------------------
-
-### Number and name of feature: LAB 08 - Feature #1 - Deploy
-
-Estimate of time needed to complete: _____
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
+Actual time needed to complete: 1 hour 35 minutes
