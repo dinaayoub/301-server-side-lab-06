@@ -24,14 +24,14 @@ app.get('/', (request, response) => {
   response.send('Hello and welcome to my homepage');
 });
 
-function ErrorMessage(status) {
+function ErrorMessage(status, source) {
   this.status = status;
   switch (status) {
     case 404:
-      this.responseText = 'Oops, we can\'t find that page!';
+      this.responseText = 'Oops, we can\'t find that page! Source: ' + source;
       break;
     default:
-      this.responseText = 'Sorry, something went wrong';
+      this.responseText = 'Sorry, something went wrong. Source: ' + source;
   }
 }
 
@@ -79,10 +79,10 @@ function handleLocation(request, response) {
             })
             .catch(err => {
               console.error('API returned error: ', err);
-              response.status(404).send(new ErrorMessage(404));
+              response.status(404).send(new ErrorMessage(404,'handleLocation'));
             });
         } catch (error) {
-          response.status(500).send(new ErrorMessage(500));
+          response.status(500).send(new ErrorMessage(500),'handleLocation');
         }
       }
     })
@@ -112,10 +112,10 @@ function handleWeather(request, response) {
       })
       .catch(err => {
         console.error('API returned error: ', err);
-        response.status(404).send(new ErrorMessage(404));
+        response.status(404).send(new ErrorMessage(404,'handleWeather'));
       });
   } catch (error) {
-    response.status(500).send(new ErrorMessage(500));
+    response.status(500).send(new ErrorMessage(500,'handleWeather'));
   }
 }
 
@@ -151,11 +151,11 @@ function handleTrails(request, response) {
       })
       .catch(err => {
         console.error('API returned error: ', err);
-        response.status(404).send(new ErrorMessage(404));
+        response.status(404).send(new ErrorMessage(404,'handleTrails'));
       });
   } catch (error) {
     console.log(error);
-    response.status(500).send(new ErrorMessage(500));
+    response.status(500).send(new ErrorMessage(500,'handleTrails'));
   }
 }
 
@@ -182,17 +182,17 @@ function handleMovies(request,response) {
         response.json(movieData);
       }) .catch(error => {
         console.error('Movie API returned error: ', error)
-        response.status(404).send(new ErrorMessage(404));
+        response.status(404).send(new ErrorMessage(404,'handleMovies'));
       });
   } catch (error) {
     console.error('Movie API returned error: ', error)
-    response.status(500).send(new ErrorMessage(404));
+    response.status(500).send(new ErrorMessage(500,'handleMovies'));
   }
 }
 
 //catch all if they go anywhere but the supported routes
 app.get('*', (request, response) => {
-  response.status(404).send(new ErrorMessage(404));
+  response.status(404).send(new ErrorMessage(404,"Catch All"));
 });
 
 //connect to the db
