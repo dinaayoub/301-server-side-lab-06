@@ -205,7 +205,9 @@ function handleYelp(request,response) {
   try{
     var city = request.query.search_query;
     if (!city) city = request.query.city;
-    const url = `https://api.yelp.com/v3/businesses/search?location=${city}`;
+    var page = request.query.page;
+    var offset = (page - 1) * 5;
+    const url = `https://api.yelp.com/v3/businesses/search?location=${city}&limit=5&offset=${offset}`;
     superagent.get(url)
       .set('Authorization','Bearer ' + YELP_API_KEY)
       .then(rawData => {
