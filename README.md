@@ -32,8 +32,16 @@ Dependencies:
 * cors
 * superagent
 
+APIs used:
+Yelp,
+Movie DB,
+The hiking project
+weather bit io
+
+
 ## Change Log
-10-14-2020 2:55pm - Added local db to cache location info
+10-15-2020 4:38 pm - Added Movie DB and Yelp APIs and enabled pagination for yelp results.
+10-14-2020 2:55 pm - Added local db to cache location info
 10-13-2020 4:00 pm - Added use of weather bit API and The Hiking Project's API to show trails and weather forecast
 10-13-2020 11:58 pm - Added use of locationiq.com GeoData API & all the API keys I will need
 10-12-2020 3:58 pm - Completed the README.md file
@@ -154,3 +162,15 @@ Start time: 1:20
 Finish time: 2:55
 
 Actual time needed to complete: 1 hour 35 minutes
+
+---------------------------------------------------------
+
+### Number and name of feature: LAB 09 - Feature #1 to #3 - Database, Server, and Deploy
+
+Estimate of time needed to complete: 3 hours
+
+Start time: 2:00 pm
+
+Finish time: 4:39 pm with a 1 hour break from 3:30-4:30
+
+Actual time needed to complete: 1 hour 39 minutes
