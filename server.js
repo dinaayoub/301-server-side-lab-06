@@ -205,7 +205,8 @@ function handleYelp(request,response) {
   try{
     var city = request.query.search_query;
     if (!city) city = request.query.city;
-    var page = request.query.page;
+    //if a page number is passed, use it. Otherwise default to the first page.
+    var page = request.query.page? request.query.page : 1;
     var offset = (page - 1) * 5;
     const url = `https://api.yelp.com/v3/businesses/search?location=${city}&limit=5&offset=${offset}`;
     superagent.get(url)
