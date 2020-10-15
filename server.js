@@ -14,6 +14,7 @@ app.use(cors());
 const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHERBIT_API_KEY = process.env.WEATHERBIT_API_KEY;
+const YELP_API_KEY = process.env.YELP_API_KEY;
 const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
 const HIKINGPROJECT_API_KEY = process.env.HIKINGPROJECT_API_KEY;
 const CLIENT = new pg.Client(process.env.DATABASE_URL);
@@ -166,7 +167,8 @@ function Movie(movieData) {
   this.overview = movieData.overview;
   this.average_votes = movieData.vote_average;
   this.total_votes = movieData.vote_count;
-  this.image_url = 'https://image.tmdb.org/t/p/w500' + movieData.poster_path;
+  //if no poster_path is provided, leave image_url null so that the front end doesn't show a broken image.
+  this.image_url = movieData.poster_path? 'https://image.tmdb.org/t/p/w500' + movieData.poster_path : null;
   this.popularity = movieData.popularity;
   this.released_on = movieData.release_date;
 }
@@ -177,16 +179,45 @@ function handleMovies(request,response) {
     const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${city}`
     superagent.get(url)
       .then(rawData => {
-        console.log(rawData.body.results[0].genre_ids);
         var movieData = rawData.body.results.map(movie => new Movie(movie));
         response.json(movieData);
-      }) .catch(error => {
+      }).catch(error => {
         console.error('Movie API returned error: ', error)
         response.status(404).send(new ErrorMessage(404,'handleMovies'));
       });
   } catch (error) {
     console.error('Movie API returned error: ', error)
     response.status(500).send(new ErrorMessage(500,'handleMovies'));
+  }
+}
+
+app.get('/yelp',handleYelp);
+
+function Restaurant(restaurantData) {
+  this.name = restaurantData.name;
+  this.image_url = restaurantData.image_url;
+  this.price = restaurantData.price;
+  this.rating = restaurantData.rating;
+  this.url = restaurantData.url;
+}
+
+function handleYelp(request,response) {
+  try{
+    var city = request.query.search_query;
+    if (!city) city = request.query.city;
+    const url = `https://api.yelp.com/v3/businesses/search?location=${city}`;
+    superagent.get(url)
+      .set('Authorization','Bearer ' + YELP_API_KEY)
+      .then(rawData => {
+        var restaurantData = rawData.body.businesses.map(restaurant => new Restaurant(restaurant));
+        response.json(restaurantData);
+      }).catch(error => {
+        console.error('Yelp API returned error: ', error)
+        response.status(404).send(new ErrorMessage(404,'handleYelp'));
+      });
+  } catch(error) {
+    console.error('Yelp API returned error: ', error)
+    response.status(500).send(new ErrorMessage(500,'handleYelp'));
   }
 }
 
