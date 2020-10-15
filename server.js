@@ -7,12 +7,14 @@ const cors = require('cors');
 const superagent = require('superagent')
 const app = express();
 const pg = require('pg');
+const { response } = require('express');
 app.use(cors());
 
 //environment variables
 const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHERBIT_API_KEY = process.env.WEATHERBIT_API_KEY;
+const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
 const HIKINGPROJECT_API_KEY = process.env.HIKINGPROJECT_API_KEY;
 const CLIENT = new pg.Client(process.env.DATABASE_URL);
 
@@ -154,6 +156,37 @@ function handleTrails(request, response) {
   } catch (error) {
     console.log(error);
     response.status(500).send(new ErrorMessage(500));
+  }
+}
+
+app.get('/movies',handleMovies);
+
+function Movie(movieData) {
+  this.title = movieData.title;
+  this.overview = movieData.overview;
+  this.average_votes = movieData.vote_average;
+  this.total_votes = movieData.vote_count;
+  this.image_url = 'https://image.tmdb.org/t/p/w500' + movieData.poster_path;
+  this.popularity = movieData.popularity;
+  this.released_on = movieData.release_date;
+}
+function handleMovies(request,response) {
+  try{
+    var city = request.query.search_query;
+    if (!city) city = request.query.city;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${city}`
+    superagent.get(url)
+      .then(rawData => {
+        console.log(rawData.body.results[0].genre_ids);
+        var movieData = rawData.body.results.map(movie => new Movie(movie));
+        response.json(movieData);
+      }) .catch(error => {
+        console.error('Movie API returned error: ', error)
+        response.status(404).send(new ErrorMessage(404));
+      });
+  } catch (error) {
+    console.error('Movie API returned error: ', error)
+    response.status(500).send(new ErrorMessage(404));
   }
 }
 
